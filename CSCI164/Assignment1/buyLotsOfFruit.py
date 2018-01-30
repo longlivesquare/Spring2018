@@ -1,6 +1,8 @@
-# Steven Duran
-# 102983019
-# January 24, 2018
+"""
+Steven Duran
+102983019
+January 30, 2018
+"""
 
 # buyLotsOfFruit.py
 # -----------------
@@ -33,11 +35,11 @@ def buyLotsOfFruit(orderList):
     Returns cost of order
     """ 
     totalCost = 0.0             
-    for fruit, amt in orderList:
-        if fruit in fruitPrices:
-            totalCost += amt * fruitPrices[fruit]
+    for fruit, lbs in orderList:
+        if (fruitPrices.has_key(fruit)):
+            totalCost += fruitPrices[fruit] * lbs
         else:
-            print "Price of %s not found" % fruit
+            print("No such fruit:%s",fruit)
             return None
     return totalCost
     

@@ -1,6 +1,8 @@
-# Steven Duran
-# 102983019
-# January 24, 2018
+"""
+Steven Duran
+102983019
+January 30, 2018
+"""
 
 # addition.py
 # -----------
@@ -18,5 +20,5 @@ Run python autograder.py
 
 def add(a, b):
     "Return the sum of a and b"
-    print "Passed a=%s and b=%s, returning a+b=%s" % (a,b,a+b)
-    return a+b
+    "*** YOUR CODE HERE ***"
+    return a + b

@@ -1,6 +1,8 @@
-# Steven Duran
-# 102983019
-# January 24, 2018
+"""
+Steven Duran
+102983019
+January 30, 2018
+"""
 
 # shopSmart.py
 # ------------
@@ -28,14 +30,16 @@ def shopSmart(orderList, fruitShops):
         orderList: List of (fruit, numPound) tuples
         fruitShops: List of FruitShops
     """    
-    lowestCost = float("inf")
+    "*** YOUR CODE HERE ***"
     lowestShop = None
+    lowestPrice = float('inf')
 
     for shop in fruitShops:
-        cost = shop.getPriceOfOrder(orderList)
-        if cost < lowestCost:
+        price = shop.getPriceOfOrder(orderList)
+        if (price < lowestPrice):
+            lowestPrice = price
             lowestShop = shop
-            lowestCost = cost
+
     return lowestShop
     
 if __name__ == '__main__':
