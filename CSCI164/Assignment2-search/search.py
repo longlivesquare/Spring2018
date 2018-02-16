@@ -72,7 +72,6 @@ def tinyMazeSearch(problem):
     w = Directions.WEST
     return  [s, s, w, s, w, w, s, w]
 
-
 def depthFirstSearch(problem):
     """
     Search the deepest nodes in the search tree first.
@@ -90,29 +89,49 @@ def depthFirstSearch(problem):
     "*** YOUR CODE HERE ***"
 
     frontier = util.Stack()
-    explored = []
-    
-    if problem.isGoalState(problem.getStartState()):
-        return []
+    explored = set()
 
     frontier.push((problem.getStartState(), []))
 
     while not frontier.isEmpty():
         state, path = frontier.pop()
-        explored.append(state)
+
+        if problem.isGoalState(state):
+            return path
+
+        explored.add(state)
 
         for sucState, sucPath, sucCost in problem.getSuccessors(state):
             if sucState not in explored:
-                if problem.isGoalState(sucState):
-                    return path[:] + [sucPath]
                 frontier.push((sucState, path[:] + [sucPath]))
 
     return []
+ 
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    frontier = util.Queue()
+    explored = set()
+
+    frontier.push((problem.getStartState(), []))
+
+    while not frontier.isEmpty():
+        state, path = frontier.pop()
+
+        if state in explored:
+            continue
+
+        if problem.isGoalState(state):
+            return path
+
+        explored.add(state)
+
+        for sucState, sucPath, sucCost in problem.getSuccessors(state):
+            if sucState not in explored:
+                frontier.push((sucState, path[:] + [sucPath]))
+
+    return []
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
