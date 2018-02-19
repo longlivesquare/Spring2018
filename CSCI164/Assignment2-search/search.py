@@ -170,7 +170,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     "*** YOUR CODE HERE ***"
 
     frontier = util.PriorityQueue()
-    explored = set()
+    explored = []
 
     frontier.push((problem.getStartState(), []), heuristic(problem.getStartState(), problem))
 
@@ -183,7 +183,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
         if problem.isGoalState(state):
             return path
 
-        explored.add(state)
+        explored.append(state)
 
         for sucState, sucPath, cost in problem.getSuccessors(state):
             if sucState not in explored:
