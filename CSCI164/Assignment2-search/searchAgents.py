@@ -1,3 +1,8 @@
+"""
+    Steven Duran
+    102983019
+    02/19/2018
+"""
 # searchAgents.py
 # ---------------
 # Licensing Information:  You are free to use or extend these projects for
@@ -496,8 +501,10 @@ def foodHeuristic(state, problem):
     hn = 0
     
     for food in unclaimedFood:
+        #hn += util.manhattanDistance(curr, food)
         hn += mazeDistance(curr, food, problem.startingGameState)
-
+    # My heuristic is based on the average distance away from each food pellet in the maze
+    # It gets full credit on the autograder but takes ~45 seconds on the tricky map.
     return hn / foodCount
 
 class ClosestDotSearchAgent(SearchAgent):
@@ -529,7 +536,8 @@ class ClosestDotSearchAgent(SearchAgent):
         problem = AnyFoodSearchProblem(gameState)
 
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        return search.breadthFirstSearch(problem)
+        #util.raiseNotDefined()
 
 class AnyFoodSearchProblem(PositionSearchProblem):
     """
