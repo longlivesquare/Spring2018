@@ -71,13 +71,13 @@ class ReflexAgent(Agent):
         "*** YOUR CODE HERE ***"
         closestGhost = min([util.manhattanDistance(newPos, ghost.getPosition()) for ghost in newGhostStates])
         if closestGhost <=1:
-          closestGhost = -1e9
+          closestGhost = -1e6
         
         if len(newFood.asList()) > 0: 
           closestFood = min([util.manhattanDistance(newPos, food) for food in newFood.asList()])
         else:
           closestFood = 1
-        return (1/closestFood) + closestGhost - 100*len(newFood.asList())
+        return (20.0/closestFood) + closestGhost - 100*len(newFood.asList())
 
 def scoreEvaluationFunction(currentGameState):
     """
@@ -211,12 +211,10 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
         def minValue(state,depth, ghost, alpha, beta):
           actions = [action for action in state.getLegalActions(ghost) if action != Directions.STOP]
 
-          possStates = [state.generateSuccessor(ghost, action) for action in actions]
-          if len(possStates) == 0:
-            return self.evaluationFunction(state)
           minV = float('inf')
           if ghost == state.getNumAgents() - 1: #Last ghost, should call max
-            for possState in possStates:
+            for action in actions:
+              possState = state.generateSuccessor(ghost, action)
               #minV.append(self._max(possState, depth))
               result = maxValue(possState, depth, alpha, beta)
               if result < minV:
@@ -226,7 +224,8 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
               beta = min([beta, minV])
               
           else: #more ghosts exist, call min
-            for possState in possStates:
+            for action in actions:
+              possState = state.generateSuccessor(ghost, action)
               result = minValue(possState, depth, ghost+1,alpha,beta)
               if result < minV:
                 minV = result
