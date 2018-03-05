@@ -68,9 +68,16 @@ class ReflexAgent(Agent):
         newFood = successorGameState.getFood()
         newGhostStates = successorGameState.getGhostStates()
         newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
-
         "*** YOUR CODE HERE ***"
-        return successorGameState.getScore()
+        closestGhost = min([util.manhattanDistance(newPos, ghost.getPosition()) for ghost in newGhostStates])
+        if closestGhost <=1:
+          closestGhost = -1e9
+        
+        if len(newFood.asList()) > 0: 
+          closestFood = min([util.manhattanDistance(newPos, food) for food in newFood.asList()])
+        else:
+          closestFood = 1
+        return (1/closestFood) + closestGhost - 100*len(newFood.asList())
 
 def scoreEvaluationFunction(currentGameState):
     """
@@ -125,7 +132,51 @@ class MinimaxAgent(MultiAgentSearchAgent):
             Returns the total number of agents in the game
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+   
+        result = self._max(gameState, 0)
+        return result
+        #result = self.minmax(gameState, 0, 0)
+        #return result[1]
+
+      
+    def _max(self, state, depth):
+      if depth >= self.depth or state.isWin() or state.isLose():
+        return self.evaluationFunction(state)
+
+      maxV = float('-inf')
+      maxAct = Directions.STOP
+      for action in [action for action in state.getLegalActions(0) if action != Directions.STOP]:
+        possState = state.generateSuccessor(0, action)
+        result = self._min(possState, depth+1, 1)
+        if result > maxV:
+          maxV = result
+          maxAct = action
+      if depth == 0:
+        return maxAct
+      else:
+        return maxV
+
+    def _min(self, state, depth, ghost):
+      actions = [action for action in state.getLegalActions(ghost) if action != Directions.STOP]
+
+      possStates = [state.generateSuccessor(ghost, action) for action in actions]
+      if len(possStates) == 0:
+        return self.evaluationFunction(state)
+      minV = float('inf')
+      if ghost == state.getNumAgents() - 1: #Last ghost, should call max
+        for possState in possStates:
+          #minV.append(self._max(possState, depth))
+          result = self._max(possState, depth)
+          if result < minV:
+            minV = result
+      else: #more ghosts exist, call min
+        for possState in possStates:
+          result = self._min(possState, depth, ghost+1)
+          if result < minV:
+            minV = result
+
+      return minV
+        
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
     """
@@ -137,7 +188,55 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
           Returns the minimax action using self.depth and self.evaluationFunction
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+
+        def maxValue(state, depth, alpha, beta):
+          if depth >= self.depth or state.isWin() or state.isLose():
+            return self.evaluationFunction(state)
+        
+          maxV = float('-inf')
+          maxAct = Directions.STOP
+          for action in [action for action in state.getLegalActions(0) if action != Directions.STOP]:
+            possState = state.generateSuccessor(0, action)
+            result = minValue(possState, depth+1, 1, alpha, beta)
+            if result > maxV:
+              maxV = result
+              maxAct = action
+            if maxV > beta:
+              return maxV
+            alpha = max([alpha, maxV])
+          if depth == 0:
+            return maxAct
+          return maxV
+
+        def minValue(state,depth, ghost, alpha, beta):
+          actions = [action for action in state.getLegalActions(ghost) if action != Directions.STOP]
+
+          possStates = [state.generateSuccessor(ghost, action) for action in actions]
+          if len(possStates) == 0:
+            return self.evaluationFunction(state)
+          minV = float('inf')
+          if ghost == state.getNumAgents() - 1: #Last ghost, should call max
+            for possState in possStates:
+              #minV.append(self._max(possState, depth))
+              result = maxValue(possState, depth, alpha, beta)
+              if result < minV:
+                minV = result
+              if minV < alpha:
+                return minV
+              beta = min([beta, minV])
+              
+          else: #more ghosts exist, call min
+            for possState in possStates:
+              result = minValue(possState, depth, ghost+1,alpha,beta)
+              if result < minV:
+                minV = result
+              if minV < alpha:
+                return minV
+              beta = min([beta, minV])
+
+          return minV
+
+        return maxValue(gameState, 0, float('-inf'), float('inf'))
 
 class ExpectimaxAgent(MultiAgentSearchAgent):
     """
@@ -152,6 +251,8 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
           legal moves.
         """
         "*** YOUR CODE HERE ***"
+       
+
         util.raiseNotDefined()
 
 def betterEvaluationFunction(currentGameState):
