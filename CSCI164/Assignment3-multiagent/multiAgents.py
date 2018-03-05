@@ -195,7 +195,7 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
         
           maxV = float('-inf')
           maxAct = Directions.STOP
-          for action in [action for action in state.getLegalActions(0) if action != Directions.STOP]:
+          for action in [act for act in state.getLegalActions(0) if act != Directions.STOP]:
             possState = state.generateSuccessor(0, action)
             result = minValue(possState, depth+1, 1, alpha, beta)
             if result > maxV:
@@ -203,7 +203,7 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
               maxAct = action
             if maxV > beta:
               return maxV
-            alpha = max([alpha, maxV])
+            alpha = max(alpha, maxV)
           if depth == 0:
             return maxAct
           return maxV
@@ -216,22 +216,18 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
             for action in actions:
               possState = state.generateSuccessor(ghost, action)
               #minV.append(self._max(possState, depth))
-              result = maxValue(possState, depth, alpha, beta)
-              if result < minV:
-                minV = result
+              minV = min(maxValue(possState, depth, alpha, beta), minV)
               if minV < alpha:
                 return minV
-              beta = min([beta, minV])
+              beta = min(beta, minV)
               
           else: #more ghosts exist, call min
             for action in actions:
               possState = state.generateSuccessor(ghost, action)
-              result = minValue(possState, depth, ghost+1,alpha,beta)
-              if result < minV:
-                minV = result
+              minV = min(minValue(possState, depth, ghost+1,alpha,beta), minV)
               if minV < alpha:
                 return minV
-              beta = min([beta, minV])
+              beta = min(beta, minV)
 
           return minV
 
